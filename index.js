@@ -54,6 +54,9 @@ export default function draggify(element, option = {x: true, y: true, callback: 
 				} else {
 					element.style.removeProperty('zIndex');
 				}
+				if (typeof callback === 'function') {
+					callback(element);
+				}
             });
 		}
 	});
