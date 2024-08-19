@@ -4,7 +4,6 @@ let lockingClientX = 0;
 
 export default function draggify(element, option = {x: true, y: true, callback: void 0}) {
 	element.setAttribute('draggify', true);
-	let zIndex = element.style.zIndex;
 	let offsetTop = element.offsetTop;
 	let offsetLeft = element.offsetLeft;
 
@@ -15,16 +14,15 @@ export default function draggify(element, option = {x: true, y: true, callback: 
 		e.preventDefault();
 		if (element.contains(e.target)) {
 			locking = element;
+			element.setAttribute('dragging', true);
 			const computedPosition = getComputedStyle(element).getPropertyValue('position');
 			if (computedPosition === 'static') {
 				element.style.setProperty('position', 'absolute');
 				element.style.setProperty('top', offsetTop + 'px');
 				element.style.setProperty('left', offsetLeft + 'px');
-				element.style.setProperty('zIndex', '999999');
 			}
 			offsetTop = element.offsetTop;
 			offsetLeft = element.offsetLeft;
-			zIndex = element.style.zIndex;
 			lockingClientX = e.clientX;
 			lockingClientY = e.clientY;
 		}
@@ -45,19 +43,14 @@ export default function draggify(element, option = {x: true, y: true, callback: 
 	document.addEventListener('mouseup', (e) => {
 		if (locking) {
 			e.preventDefault();
+			const element = locking;
 			locking = null;
 			lockingClientY = 0;
 			lockingClientX = 0;
-            requestIdleCallback(() => {
-                if (zIndex !== void 0) {
-					element.style.setProperty('zIndex', zIndex);
-				} else {
-					element.style.removeProperty('zIndex');
-				}
-				if (typeof callback === 'function') {
-					callback(element);
-				}
-            });
+			element.removeAttribute('dragging');
+			if (typeof callback === 'function') {
+				requestIdleCallback(callback);
+			}
 		}
 	});
 }
