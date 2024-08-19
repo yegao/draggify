@@ -3,7 +3,7 @@ let lockingClientY = 0;
 let lockingClientX = 0;
 
 export default function draggify(element, option = {x: true, y: true, callback: void 0}) {
-	element.setAttribute('draddy')
+	element.setAttribute('draggify', true);
 	let zIndex = element.style.zIndex;
 	let offsetTop = element.offsetTop;
 	let offsetLeft = element.offsetLeft;
