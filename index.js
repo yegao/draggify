@@ -48,8 +48,8 @@ export default function draggify(element, option = {x: true, y: true, callback: 
 			lockingClientY = 0;
 			lockingClientX = 0;
 			element.removeAttribute('dragging');
-			if (typeof callback === 'function') {
-				requestIdleCallback(callback);
+			if (typeof option.callback === 'function') {
+				requestIdleCallback(option.callback);
 			}
 		}
 	});
