@@ -29,7 +29,7 @@ export default function draggify(element, option = {x: true, y: true, callback: 
 	});
 
 	document.addEventListener('mousemove', (e) => {
-		if (locking) {
+		if (locking === element) {
 			e.preventDefault();
 			if (option.x) {
 				locking.style.setProperty('left', (offsetLeft + e.clientX - lockingClientX) + 'px');
@@ -41,7 +41,7 @@ export default function draggify(element, option = {x: true, y: true, callback: 
 	});
 
 	document.addEventListener('mouseup', (e) => {
-		if (locking) {
+		if (locking === element) {
 			e.preventDefault();
 			const element = locking;
 			locking = null;
