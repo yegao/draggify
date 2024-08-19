@@ -2,12 +2,9 @@ let locking = null;
 let lockingClientY = 0;
 let lockingClientX = 0;
 
-const idelCallbacks = [];
-
 export default function draggify(element, option = {x: true, y: true, callback: void 0}) {
 	element.setAttribute('draddy')
 	let zIndex = element.style.zIndex;
-	let offsetParent = element.offsetParent;
 	let offsetTop = element.offsetTop;
 	let offsetLeft = element.offsetLeft;
 
@@ -25,7 +22,6 @@ export default function draggify(element, option = {x: true, y: true, callback: 
 				element.style.setProperty('left', offsetLeft + 'px');
 				element.style.setProperty('zIndex', '999999');
 			}
-			offsetParent = element.offsetParent;
 			offsetTop = element.offsetTop;
 			offsetLeft = element.offsetLeft;
 			zIndex = element.style.zIndex;
