@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/yegao/draggify.git"
   },
-  "keywords": [],
+  "keywords": ["drag", "draggify", "draggable"],
   "author": "叶锆锆",
   "license": "MIT",
   "bugs": {
