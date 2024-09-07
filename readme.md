@@ -10,3 +10,7 @@ draggify(document.querySelector('#element'), {
     y: true
 });
 ```
+
+### demo
+./demo/demo.js
+![alt text](image.png)

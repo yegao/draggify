@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        html,body {
+            position: absolute;
+            display: block;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        ul.x {
+            list-style: none;
+            position: relative;
+            margin: 0 auto;
+            top: 20px;
+            width: 228px;
+            padding: 10px;
+            height: 410px;
+            display: block;
+            border: 1px dashed #000000;
+            background: #eeeeff;
+            z-index: 1;
+            box-sizing: border-box;
+            cursor: ew-resize;
+        }
+        li {
+            width: 200px;
+            height: 100px;
+            border: 1px dashed #000000;
+            text-align: center;
+            box-sizing: border-box;
+            margin-top: 20px;
+        }
+        li.x {
+            cursor: ew-resize;
+            padding: 10px 0;
+        }
+        li.y {
+            cursor: ns-resize;
+            padding: 10px 0;
+        }
+    
+        li.xy {
+            cursor: move;
+            padding: 15px 0;
+        }
+
+        div.xy {
+            position: relative;
+            margin: 0 auto;
+            top: 20px;
+            width: 600px;
+            padding: 10px;
+            height: 500px;
+            display: block;
+            border: 1px solid #000000;
+            background: #eeeeff;
+            z-index: 1;
+            box-sizing: border-box;
+            cursor: move;
+        }
+    
+        div:hover, ul:hover, li:hover {
+            border: 1px dashed #ff0000;
+        }
+    
+        [dragging] {
+            background-color: #636fdc46 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="xy">
+        <ul class="x">
+            <li class="x">
+                <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><path d="M166.88179 488.353204h707.945473v47.293592H166.88179z" fill="#13227a" p-id="8179"></path><path d="M273.761139 699.403459l-127.505188-173.340387-10.208749-13.958901 10.208749-13.958901 127.505188-173.548729 38.126552 27.917803-117.29644 159.589827 117.29644 159.381485zM728.154629 671.485656l117.296439-159.381485-117.296439-159.589827 38.126551-27.917803 127.505188 173.548729 10.208749 13.958901-10.208749 13.958901-127.505188 173.340387z" fill="#13227a" p-id="8180"></path></svg>        </li>
+            <li class="y">
+                <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><path d="M488.353204 865.24354V157.298067h47.293592v707.945473z" fill="#13227a" p-id="5179"></path><path d="M699.403459 758.364191l-173.340387 127.505188-13.958901 10.208749-13.958901-10.208749-173.548729-127.505188 27.917803-38.126551 159.589827 117.296439 159.381485-117.296439zM671.485656 303.76236l-159.381485-117.088098-159.589827 117.088098-27.917803-37.918209 173.548729-127.505189 13.958901-10.41709 13.958901 10.41709 173.340387 127.505189z" fill="#13227a" p-id="5180"></path></svg>
+            </li>
+            <li class="xy">
+                <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="70" height="70"><path d="M557.9543826 659.28968825v186.46874474l70.55175999-68.46024734 61.56708994 63.39348117-174.59719636 169.50097271-177.69027843-169.17693494 60.91901441-64.01209786 70.90525524 67.45867656-0.02945747-185.20205389h88.37381268z m282.73728422-325.36292078l169.50097271 174.59719636-169.17693494 177.69027843-64.01209786-60.91901441 67.45867656-70.90525524H659.28968825v-88.37381268h186.46874474l-68.46024734-70.52230252 63.39348117-61.56708994z m-657.56008127 0l63.39348117 61.56708994-68.48970481 70.52230252H364.71031175v88.37381268h-185.34934265l67.45867653 70.90525524-63.98264036 60.91901441-169.17693494-177.69027843 169.47151522-174.59719636zM515.47603617 13.80736047l174.59719636 169.50097271-61.56708994 63.39348117-70.52230252-68.46024734L557.9543826 364.71031175h-88.37381268v-185.17259504l-70.87579777 67.45867656-60.91901441-64.01209786 177.69027843-169.17693494z" p-id="8554" fill="#13227a"></path></svg>
+            </li>
+        </ul>
+    </div>
+    <script type="module" src="./demo.js"></script>
+</body>
+</html>
