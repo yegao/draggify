@@ -1,6 +1,13 @@
 # draggify
 
+
 Make a HTMLElement draggable
+
+### usage
+
+```bash
+npm i -S draggify
+```
 
 ```js
 import draggify from 'draggify';
