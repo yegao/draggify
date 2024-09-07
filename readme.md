@@ -20,4 +20,3 @@ draggify(document.querySelector('#element'), {
 
 ### demo
 ./demo/demo.js
-![alt text](image.png)
