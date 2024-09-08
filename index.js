@@ -85,7 +85,7 @@ function Fiber(element, option) {
 	this.option = option;
 }
 
-const touchStartHandler = (e) => {
+const mousedownHandler = (e) => {
 	if (hit) {
 		return;
 	}
@@ -112,9 +112,52 @@ const touchStartHandler = (e) => {
 	}
 }
 
-document.addEventListener('mousedown', touchStartHandler);
+document.addEventListener('mousedown', mousedownHandler);
 
-document.addEventListener('touchstart', touchStartHandler);
+const touchstartHandler = (e) => {
+	if (hit) {
+		return;
+	}
+	e.preventDefault();
+	let fiber = tree;
+	const target = e.target;
+	while(fiber) {
+		const element = fiber.element;
+		if (element.contains(target)) {
+			hit = fiber;
+			fiber = fiber.descendant;
+		} else {
+			fiber = fiber.next;
+		}
+	}
+	if (hit) {
+		state |= downing;
+		const element = hit.element;
+		const touch = e.changedTouches[0];
+		clientX = touch.clientX;
+		clientY = touch.clientY;
+		element.setAttribute('dragging', true);
+        let transform = getComputedStyle(element).getPropertyValue('transform');
+        matrix = (transform === 'none' ? [1, 0, 0, 1, 0, 0] : transform.slice(7, -1).split(',').map(v => parseFloat(v)));
+	}
+}
+
+document.addEventListener('touchstart', touchstartHandler, { passive: false });
+
+const mousemoveHandler = (e) => {
+	e.preventDefault();
+	if (!hit) {
+		return;
+	}
+	lastMovingEvent = e;
+	if (state & moving) {
+		return;
+	}
+	state |= moving;
+	requestAnimationFrame(mousemove);
+}
+
+document.addEventListener('mousemove', mousemoveHandler);
 
 const touchMoveHandler = (e) => {
 	e.preventDefault();
@@ -126,19 +169,17 @@ const touchMoveHandler = (e) => {
 		return;
 	}
 	state |= moving;
-	requestAnimationFrame(move);
+	requestAnimationFrame(touchmove);
 }
 
-document.addEventListener('mousemove', touchMoveHandler);
+document.addEventListener('touchmove', touchMoveHandler, { passive: false });
 
-document.addEventListener('touchmove', touchMoveHandler);
-
-const touchEndHandler = (e) => {
+const mouseupHandler = (e) => {
 	if (!hit) {
 		return;
 	}
 	state &= ~downing;
-	move();
+	mousemove();
 	e.preventDefault();
 	const element = hit.element;
 	const option = hit.option;
@@ -153,12 +194,32 @@ const touchEndHandler = (e) => {
 	}
 }
 
-document.addEventListener('mouseup', touchEndHandler);
+const touchendHandler = (e) => {
+	if (!hit) {
+		return;
+	}
+	state &= ~downing;
+	touchmove();
+	e.preventDefault();
+	const element = hit.element;
+	const option = hit.option;
+	hit = null;
+	clientY = 0;
+	clientX = 0;
+	element.removeAttribute('dragging');
+	if (typeof option.callback === 'function') {
+		requestIdleCallback(() => {
+			option.callback(element);
+		});
+	}
+}
 
-document.addEventListener('touchend', touchEndHandler);
+document.addEventListener('mouseup', mouseupHandler);
+
+document.addEventListener('touchend', touchendHandler, { passive: false });
 
 // 处理当前帧片段中最后一次mousemove事件
-function move() {
+function mousemove() {
 	// 保证move只会在mouseup重置hit等之前被执行
 	if (state & moving) {
 		state &= ~moving;
@@ -169,6 +230,22 @@ function move() {
 			translateX(hit.element, lastMovingEvent.clientX - clientX);
 		} else if (option.y) {
 			translateY(hit.element, lastMovingEvent.clientY - clientY);
+		}
+	}
+}
+
+function touchmove() {
+	// 保证move只会在mouseup重置hit等之前被执行
+	if (state & moving) {
+		state &= ~moving;
+		const option = hit.option;
+		const lastTouch = lastMovingEvent.changedTouches[0];
+		if (option.x && option.y) {
+			translate(hit.element, lastTouch.clientX - clientX, lastTouch.clientY - clientY);
+		} else if (option.x) {
+			translateX(hit.element, lastTouch.clientX - clientX);
+		} else if (option.y) {
+			translateY(hit.element, lastTouch.clientY - clientY);
 		}
 	}
 }
