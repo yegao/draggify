@@ -85,7 +85,7 @@ function Fiber(element, option) {
 	this.option = option;
 }
 
-document.addEventListener('mousedown', (e) => {
+const touchStartHandler = (e) => {
 	if (hit) {
 		return;
 	}
@@ -110,9 +110,13 @@ document.addEventListener('mousedown', (e) => {
         let transform = getComputedStyle(element).getPropertyValue('transform');
         matrix = (transform === 'none' ? [1, 0, 0, 1, 0, 0] : transform.slice(7, -1).split(',').map(v => parseFloat(v)));
 	}
-});
+}
 
-document.addEventListener('mousemove', (e) => {
+document.addEventListener('mousedown', touchStartHandler);
+
+document.addEventListener('touchstart', touchStartHandler);
+
+const touchMoveHandler = (e) => {
 	e.preventDefault();
 	if (!hit) {
 		return;
@@ -123,9 +127,13 @@ document.addEventListener('mousemove', (e) => {
 	}
 	state |= moving;
 	requestAnimationFrame(move);
-});
+}
 
-document.addEventListener('mouseup', (e) => {
+document.addEventListener('mousemove', touchMoveHandler);
+
+document.addEventListener('touchmove', touchMoveHandler);
+
+const touchEndHandler = (e) => {
 	if (!hit) {
 		return;
 	}
@@ -143,7 +151,11 @@ document.addEventListener('mouseup', (e) => {
 			option.callback(element);
 		});
 	}
-});
+}
+
+document.addEventListener('mouseup', touchEndHandler);
+
+document.addEventListener('touchend', touchEndHandler);
 
 // 处理当前帧片段中最后一次mousemove事件
 function move() {
