@@ -214,9 +214,9 @@ const mouseupHandler = (e) => {
 	clientY = 0;
 	clientX = 0;
 	element.removeAttribute('dragging');
-	if (typeof option.callback === 'function') {
+	if (typeof option.idle === 'function') {
 		requestIdleCallback(() => {
-			option.callback(element);
+			option.idle(element);
 		});
 	}
 }
@@ -234,9 +234,9 @@ const touchendHandler = (e) => {
 	clientY = 0;
 	clientX = 0;
 	element.removeAttribute('dragging');
-	if (typeof option.callback === 'function') {
+	if (typeof option.idle === 'function') {
 		requestIdleCallback(() => {
-			option.callback(element);
+			option.idle(element);
 		});
 	}
 }
@@ -277,7 +277,7 @@ function touchmove() {
 	}
 }
 
-export default function draggify(element, option = {x: true, y: true, callback: void 0, gc: true}) {
+export default function draggify(element, option = {x: true, y: true, idle: void 0, gc: true}) {
 	element.setAttribute('draggify', true);
 	const fiber = new Fiber(element, option);
 	if (tree) {
