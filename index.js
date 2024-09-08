@@ -1,4 +1,3 @@
-
 const nothing = 0b000;
 
 const downing = 0b001
@@ -8,14 +7,26 @@ let state = nothing;
 
 let hit = null;
 
+let matrix = [1, 0, 0, 1, 0, 0];
+
 let clientY = 0; // 鼠标按下时候event的clientY
 let clientX = 0; // 鼠标按下时候event的clientX
-let offsetTop = 0; // 鼠标按下时候element的offsetTop
-let offsetLeft = 0; // 鼠标按下时候element的offsetLeft
 
 let lastMovingEvent = null;
 
 let tree = null;
+
+function translateX(element, x) {
+	element.style.transform = 'matrix(' + matrix[0] + ',' + matrix[1] + ',' + matrix[2] + ',' + matrix[3] + ',' + (matrix[4] + matrix[0] * x) + ',' + (matrix[5] + matrix[1] * x) + ')';
+}
+
+function translateY(element, y) {
+	element.style.transform = 'matrix(' + matrix[0] + ',' + matrix[1] + ',' + matrix[2] + ',' + matrix[3] + ',' + (matrix[4] + matrix[2] * y) + ',' + (matrix[5] + matrix[3] * y) + ')';
+}
+
+function translate(element, x, y) {
+	element.style.transform = 'matrix(' + matrix[0] + ',' + matrix[1] + ',' + matrix[2] + ',' + matrix[3] + ',' + (matrix[0] * x + matrix[2] * y + matrix[4]) + ',' + (matrix[1] * x + matrix[3] * y + matrix[5]) + ')';
+}
 
 function wrap(fiber, node) {
 	fiber.descendant = node;
@@ -95,33 +106,9 @@ document.addEventListener('mousedown', (e) => {
 		const element = hit.element;
 		clientX = e.clientX;
 		clientY = e.clientY;
-		offsetTop = element.offsetTop;
-		offsetLeft = element.offsetLeft;
 		element.setAttribute('dragging', true);
-		const computedPosition = getComputedStyle(element).getPropertyValue('position');
-		if (computedPosition !== 'absolute') {
-			if (!hit.option.auto) {
-				let next = element;
-				const list = [];
-				while (next = next.nextElementSibling) {
-					const nextComputedPosition = getComputedStyle(next).getPropertyValue('position');
-					if (nextComputedPosition !== 'absolute') {
-						list.push(next, next.offsetTop, next.offsetLeft);
-					}
-				}
-				for (let i = 0, len = list.length; i < len;) {
-					list[i].style.setProperty('position', 'absolute');
-					list[i].style.setProperty('top', list[i + 1] + 'px');
-					list[i].style.setProperty('left', list[i + 2] + 'px');
-					list[i].style.setProperty('margin', '0px');
-					i += 3
-				}
-			}
-			element.style.setProperty('position', 'absolute');
-			element.style.setProperty('top', offsetTop + 'px');
-			element.style.setProperty('left', offsetLeft + 'px');
-			element.style.setProperty('margin', '0px');
-		}
+        let transform = getComputedStyle(element).getPropertyValue('transform');
+        matrix = (transform === 'none' ? [1, 0, 0, 1, 0, 0] : transform.slice(7, -1).split(',').map(v => parseFloat(v)));
 	}
 });
 
@@ -163,13 +150,13 @@ function move() {
 	// 保证move只会在mouseup重置hit等之前被执行
 	if (state & moving) {
 		state &= ~moving;
-		const element = hit.element;
 		const option = hit.option;
-		if (option.x) {
-			element.style.setProperty('left', (offsetLeft + lastMovingEvent.clientX - clientX) + 'px');
-		}
-		if (option.y) {
-			element.style.setProperty('top', (offsetTop + lastMovingEvent.clientY - clientY) + 'px');
+		if (option.x && option.y) {
+			translate(hit.element, lastMovingEvent.clientX - clientX, lastMovingEvent.clientY - clientY);
+		} else if (option.x) {
+			translateX(hit.element, lastMovingEvent.clientX - clientX);
+		} else if (option.y) {
+			translateY(hit.element, lastMovingEvent.clientY - clientY);
 		}
 	}
 }
