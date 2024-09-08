@@ -18,5 +18,5 @@ draggify(document.querySelector('#element'), {
 });
 ```
 
-### demo
+### Have a try
 https://yegao.github.io/draggify
