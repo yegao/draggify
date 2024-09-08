@@ -19,4 +19,4 @@ draggify(document.querySelector('#element'), {
 ```
 
 ### demo
-./demo/demo.js
+https://yegao.github.io/draggify
