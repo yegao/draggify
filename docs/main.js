@@ -1,4 +1,4 @@
-import draggify from './draggify.js';
+import draggify from '../index.js';
 
 const xs = document.querySelectorAll('.x');
 for (let element of xs) {

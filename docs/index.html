@@ -15,7 +15,7 @@
             box-sizing: border-box;
             overflow: hidden;
         }
-        ul.x {
+        ul {
             list-style: none;
             position: relative;
             margin: 0 auto;
@@ -25,10 +25,11 @@
             height: 410px;
             display: block;
             border: 1px dashed #000000;
-            background: #eeeeff;
+            background: #b0b0b0;
             z-index: 1;
             box-sizing: border-box;
             cursor: ew-resize;
+            box-shadow: 0 0 4px #000000;
         }
         li {
             width: 200px;
@@ -37,6 +38,7 @@
             text-align: center;
             box-sizing: border-box;
             margin-top: 20px;
+            box-shadow: 0 0 4px #000000;
         }
         li.x {
             cursor: ew-resize;
@@ -60,11 +62,12 @@
             padding: 10px;
             height: 500px;
             display: block;
-            border: 1px solid #000000;
-            background: #eeeeff;
+            border: 1px dashed #000000;
+            background: #b0b0b0;
             z-index: 1;
             box-sizing: border-box;
             cursor: move;
+            box-shadow: 0 0 4px #000000;
         }
     
         div:hover, ul:hover, li:hover {
@@ -72,7 +75,7 @@
         }
     
         [dragging] {
-            background-color: #636fdc46 !important;
+            background-color: #71707a46 !important;
         }
     </style>
 </head>
