@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="x5-orientation" content="landscape">
+    <meta name="screen-orientation" content="landscape">
     <title>draggify</title>
     <style>
         html {
@@ -46,6 +48,7 @@
             box-sizing: border-box;
             cursor: ew-resize;
             box-shadow: 0 0 4px #000000;
+            z-index: 5;
         }
 
         li {
@@ -96,10 +99,10 @@
             height: 80vh;
             border: 1px dashed #000000;
             background: #b0b0b0;
-            z-index: 1;
             box-sizing: border-box;
             cursor: move;
             box-shadow: 0 0 4px #000000;
+            z-index: 2;
         }
 
         div.xy::after {
@@ -124,6 +127,8 @@
             box-sizing: border-box;
             cursor: ew-resize;
             box-shadow: 0 0 4px #000000;
+            overflow: hidden;
+            z-index: 2;
         }
 
         code {
@@ -131,17 +136,21 @@
         }
 
         span {
-            position: absolute;
             color:#000000;
             font-size: 20px;
             font-weight: bold;
             padding: 10px;
-            right: 2vw;
-            bottom: 1vh;
+            width: 80vw;
+            z-index: 1;
+            margin-top: 20px;
+            border-top: 2px solid #000000;
+            cursor: pointer;
+            text-align: right;
         }
 
-        a {
-            color: #555555;
+        b {
+            display: block;
+            color:#4444cc;
         }
     
         [dragging] {
@@ -186,9 +195,20 @@ const xys = document.querySelectorAll('.xy');
 for (let element of xys) {
     draggify(element, {x: true, y: true});
 }</code></pre></div>
-    <span>Written by <a href="https://github.com/yegao" target="_blank">yegao</a></span>
-
     </div>
+    <span id="yegao">Support touch screen operation on mobile devices. <br/><b>By yegao</b></span>
+    <script>
+        document.getElementById('yegao').addEventListener('click', function(event) {
+            console.log('click');
+            event.preventDefault();
+            window.open('https://github.com/yegao', '_blank');
+        });
+        document.getElementById('yegao').addEventListener('touchstart', function(event) {
+            console.log('touchstart');
+            event.preventDefault();
+            window.open('https://github.com/yegao', '_blank');
+        });
+    </script>
     <script type="module" src="./main.js"></script>
 </body>
 </html>
