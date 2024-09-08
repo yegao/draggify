@@ -1,6 +1,6 @@
 {
   "name": "draggify",
-  "version": "3.1.2",
+  "version": "3.1.3",
   "description": "Make HTMLElement draggable",
   "main": "index.js",
   "scripts": {

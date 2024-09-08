@@ -26,10 +26,10 @@
             box-sizing: border-box;
             justify-content: center;
             align-items: center;
-            background-image: 
-            linear-gradient(to right, #9999cc 1px, transparent 1px),
-            linear-gradient(to bottom, #9999cc 1px, transparent 1px);
-            background-size: 64px 64px;
+            /* background-image:  */
+            /* linear-gradient(to right, #9999cc 1px, transparent 1px),
+            linear-gradient(to bottom, #9999cc 1px, transparent 1px); */
+            /* background-size: 64px 64px; */
         }
 
         ul {
@@ -89,6 +89,10 @@
             padding: 15px 0;
         }
 
+        .test{
+            position: absolute;
+        }
+
         div.xy {
             display: flex;
             flex-direction: row;
@@ -135,6 +139,33 @@
             color: #67f7d3;
         }
 
+        div#grid {
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: grid;
+            grid-template-columns: repeat(100, 1vw);
+            grid-template-rows: repeat(100, 1vh);
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        div#close {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100px;
+            background: #d32b2b;
+            z-index: 11;
+            cursor:pointer;
+            text-align: center;
+        }
+
+        div#grid>div {
+            border: 1px solid #000000;
+        }
+
         span {
             color:#000000;
             font-size: 20px;
@@ -146,11 +177,29 @@
             border-top: 2px solid #000000;
             cursor: pointer;
             text-align: right;
+            text-align: left;
         }
 
         b {
-            display: block;
             color:#4444cc;
+            cursor:pointer;
+        }
+
+        #github {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            right: 3vw;
+            bottom: 2vh;
+            text-align: left;
+            cursor:pointer;
+            vertical-align: middle;
+            height: 24px;
+        }
+
+        #github:hover {
+            text-decoration: underline;
         }
     
         [dragging] {
@@ -195,18 +244,24 @@ const xys = document.querySelectorAll('.xy');
 for (let element of xys) {
     draggify(element, {x: true, y: true});
 }</code></pre></div>
+<b id="github">
+    -> Star/Follow yegao&nbsp;
+    <svg height="24" aria-hidden="true" viewBox="0 0 24 24" version="1.1" width="24" data-view-component="true" class="octicon octicon-mark-github">
+        <path d="M12.5.75C6.146.75 1 5.896 1 12.25c0 5.089 3.292 9.387 7.863 10.91.575.101.79-.244.79-.546 0-.273-.014-1.178-.014-2.142-2.889.532-3.636-.704-3.866-1.35-.13-.331-.69-1.352-1.18-1.625-.402-.216-.977-.748-.014-.762.906-.014 1.553.834 1.769 1.179 1.035 1.74 2.688 1.25 3.349.948.1-.747.402-1.25.733-1.538-2.559-.287-5.232-1.279-5.232-5.678 0-1.25.445-2.285 1.178-3.09-.115-.288-.517-1.467.115-3.048 0 0 .963-.302 3.163 1.179.92-.259 1.897-.388 2.875-.388.977 0 1.955.13 2.875.388 2.2-1.495 3.162-1.179 3.162-1.179.633 1.581.23 2.76.115 3.048.733.805 1.179 1.825 1.179 3.09 0 4.413-2.688 5.39-5.247 5.678.417.36.776 1.05.776 2.128 0 1.538-.014 2.774-.014 3.162 0 .302.216.662.79.547C20.709 21.637 24 17.324 24 12.25 24 5.896 18.854.75 12.5.75Z"></path>
+    </svg>
+</b>
     </div>
-    <span id="yegao">Support touch screen operation on mobile devices. <br/><b>By yegao</b></span>
+    <span>Draggify supports touch on mobile devices.<br/>Draggify is very fast.<br/>Click <b id="test">here</b> to create 10000 draggable elements.</span>
     <script>
-        document.getElementById('yegao').addEventListener('click', function(event) {
+        document.getElementById('github').addEventListener('click', function(event) {
             console.log('click');
             event.preventDefault();
-            window.open('https://github.com/yegao', '_blank');
+            window.open('https://github.com/yegao/draggify', '_blank');
         });
-        document.getElementById('yegao').addEventListener('touchstart', function(event) {
+        document.getElementById('github').addEventListener('touchstart', function(event) {
             console.log('touchstart');
             event.preventDefault();
-            window.open('https://github.com/yegao', '_blank');
+            window.open('https://github.com/yegao/draggify', '_blank');
         });
     </script>
     <script type="module" src="./main.js"></script>

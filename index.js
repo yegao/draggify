@@ -77,6 +77,33 @@ function merge(fiber, node) {
 	node.next = fiber
 }
 
+export function check() {
+	console.log(tree);
+}
+
+function _gc(node) {
+	if (node === null) {
+		return;
+	}
+	let prev = null;
+	do {
+		const element = node.element;
+		if (document.contains(element)) {
+			prev = node;
+			_gc(node.descendant);
+		} else if (prev) {
+			prev.next = node.next;
+		} else {
+			node.ancestor.descendant = node.next;
+		}
+		node = node.next;
+	} while(node);
+}
+
+export function gc() {
+	_gc(tree);
+}
+
 function Fiber(element, option) {
 	this.ancestor = null;
 	this.descendant = null;
@@ -250,10 +277,13 @@ function touchmove() {
 	}
 }
 
-export default function draggify(element, option = {x: true, y: true, callback: void 0}) {
+export default function draggify(element, option = {x: true, y: true, callback: void 0, gc: true}) {
 	element.setAttribute('draggify', true);
 	const fiber = new Fiber(element, option);
 	if (tree) {
+		if (option.gc) {
+			gc();
+		}
 		merge(fiber, tree);
 	} else {
 		tree = fiber;
