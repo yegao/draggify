@@ -1,4 +1,4 @@
-import draggify, {check, gc} from './index.js';
+import draggify, {snapshot, gc} from './index.js';
 
 const xs = document.querySelectorAll('.x');
 for (let element of xs) {
@@ -49,6 +49,6 @@ document.getElementById('test').addEventListener('click', e => {
         document.body.removeChild(grid);
         document.body.removeChild(close);
         gc();
-        check();
+        snapshot();
     });
 });

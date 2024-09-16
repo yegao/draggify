@@ -1,11 +1,10 @@
-const nothing = 0b000;
-
-const downing = 0b001
-const moving = 0b010;
+export const nothing = 0b000;
+export const downing = 0b001
+export const moving = 0b010;
 
 let state = nothing;
 
-let hit = null;
+let taken = null;
 
 let matrix = [1, 0, 0, 1, 0, 0];
 
@@ -28,83 +27,79 @@ function translate(element, x, y) {
 	element.style.transform = 'matrix(' + matrix[0] + ',' + matrix[1] + ',' + matrix[2] + ',' + matrix[3] + ',' + (matrix[0] * x + matrix[2] * y + matrix[4]) + ',' + (matrix[1] * x + matrix[3] * y + matrix[5]) + ')';
 }
 
-function wrap(fiber, node) {
-	fiber.descendant = node;
-	if (tree === node) {
+function wrap(fiber, token) {
+	fiber.descendant = token;
+	if (tree === token) {
 		tree = fiber;
 	} else {
-		const ancestor = node.ancestor;
-		if (ancestor && ancestor.descendant === node) {
+		const ancestor = token.ancestor;
+		if (ancestor && ancestor.descendant === token) {
 			ancestor.descendant = fiber;
 		}
 	}
-	node.ancestor = fiber;
-	node = node.next;
+	token.ancestor = fiber;
+	token = token.next;
 	let isolate = fiber;
-	while(node) {
-		if (fiber.element.contains(node.element)) {
-			node.ancestor = fiber;
+	while(token) {
+		if (fiber.element.contains(token.element)) {
+			token.ancestor = fiber;
 		} else {
-			isolate.next = node;
-			isolate = node;
+			isolate.next = token;
+			isolate = token;
 		}
-		node = node.next;
+		token = token.next;
 	} 
 }
 
-function merge(fiber, node) {
+function merge(fiber, token) {
 	const fe = fiber.element;
-	let next = node;
+	let next = token;
 	do {
-		node = next;
-		const element = node.element;
+		token = next;
+		const element = token.element;
 		if (fe === element) {
 			return;
 		}
 		if (fe.contains(element)) {
-			return wrap(fiber, node);
+			return wrap(fiber, token);
 		}
 		if (element.contains(fe)) {
-			if (node.descendant) {
-				return merge(fiber, node.descendant);
+			if (token.descendant) {
+				return merge(fiber, token.descendant);
 			}
-			node.descendant = fiber;
-			fiber.ancestor = node;
+			token.descendant = fiber;
+			fiber.ancestor = token;
 			return;
 		}
-		next = node.next;
+		next = token.next;
 	} while(next);
-	node.next = fiber
+	token.next = fiber
 }
 
-export function check() {
-	console.log(tree);
-}
-
-function _gc(node) {
-	if (node === null) {
+function _gc(token) {
+	if (token === null) {
 		return;
 	}
 	let prev = null;
 	do {
-		const element = node.element;
+		const element = token.element;
 		if (document.contains(element)) {
-			prev = node;
-			_gc(node.descendant);
+			prev = token;
+			_gc(token.descendant);
 		} else if (prev) {
-			prev.next = node.next;
-		} else {
-			node.ancestor.descendant = node.next;
+			prev.next = token.next;
+		} else if (token.ancestor) {
+			token.ancestor.descendant = token.next;
 		}
-		node = node.next;
-	} while(node);
+		token = token.next;
+	} while(token);
 }
 
 export function gc() {
 	_gc(tree);
 }
 
-function Fiber(element, option) {
+function Token(element, option) {
 	this.ancestor = null;
 	this.descendant = null;
 	this.next = null;
@@ -113,24 +108,24 @@ function Fiber(element, option) {
 }
 
 const mousedownHandler = (e) => {
-	if (hit) {
+	if (taken) {
 		return;
 	}
 	e.preventDefault();
-	let fiber = tree;
+	let token = tree;
 	const target = e.target;
-	while(fiber) {
-		const element = fiber.element;
+	while(token) {
+		const element = token.element;
 		if (element.contains(target)) {
-			hit = fiber;
-			fiber = fiber.descendant;
+			taken = token;
+			token = token.descendant;
 		} else {
-			fiber = fiber.next;
+			token = token.next;
 		}
 	}
-	if (hit) {
+	if (taken) {
 		state |= downing;
-		const element = hit.element;
+		const element = taken.element;
 		clientX = e.clientX;
 		clientY = e.clientY;
 		element.setAttribute('dragging', true);
@@ -142,24 +137,24 @@ const mousedownHandler = (e) => {
 document.addEventListener('mousedown', mousedownHandler);
 
 const touchstartHandler = (e) => {
-	if (hit) {
+	if (taken) {
 		return;
 	}
 	e.preventDefault();
-	let fiber = tree;
+	let token = tree;
 	const target = e.target;
-	while(fiber) {
-		const element = fiber.element;
+	while(token) {
+		const element = token.element;
 		if (element.contains(target)) {
-			hit = fiber;
-			fiber = fiber.descendant;
+			taken = token;
+			token = token.descendant;
 		} else {
-			fiber = fiber.next;
+			token = token.next;
 		}
 	}
-	if (hit) {
+	if (taken) {
 		state |= downing;
-		const element = hit.element;
+		const element = taken.element;
 		const touch = e.changedTouches[0];
 		clientX = touch.clientX;
 		clientY = touch.clientY;
@@ -173,7 +168,7 @@ document.addEventListener('touchstart', touchstartHandler, { passive: false });
 
 const mousemoveHandler = (e) => {
 	e.preventDefault();
-	if (!hit) {
+	if (!taken) {
 		return;
 	}
 	lastMovingEvent = e;
@@ -188,7 +183,7 @@ document.addEventListener('mousemove', mousemoveHandler);
 
 const touchMoveHandler = (e) => {
 	e.preventDefault();
-	if (!hit) {
+	if (!taken) {
 		return;
 	}
 	lastMovingEvent = e;
@@ -202,15 +197,15 @@ const touchMoveHandler = (e) => {
 document.addEventListener('touchmove', touchMoveHandler, { passive: false });
 
 const mouseupHandler = (e) => {
-	if (!hit) {
+	if (!taken) {
 		return;
 	}
 	state &= ~downing;
 	mousemove();
 	e.preventDefault();
-	const element = hit.element;
-	const option = hit.option;
-	hit = null;
+	const element = taken.element;
+	const option = taken.option;
+	taken = null;
 	clientY = 0;
 	clientX = 0;
 	element.removeAttribute('dragging');
@@ -222,15 +217,15 @@ const mouseupHandler = (e) => {
 }
 
 const touchendHandler = (e) => {
-	if (!hit) {
+	if (!taken) {
 		return;
 	}
 	state &= ~downing;
 	touchmove();
 	e.preventDefault();
-	const element = hit.element;
-	const option = hit.option;
-	hit = null;
+	const element = taken.element;
+	const option = taken.option;
+	taken = null;
 	clientY = 0;
 	clientX = 0;
 	element.removeAttribute('dragging');
@@ -247,45 +242,57 @@ document.addEventListener('touchend', touchendHandler, { passive: false });
 
 // 处理当前帧片段中最后一次mousemove事件
 function mousemove() {
-	// 保证move只会在mouseup重置hit等之前被执行
+	// 保证move只会在mouseup重置taken等之前被执行
 	if (state & moving) {
 		state &= ~moving;
-		const option = hit.option;
+		const option = taken.option;
 		if (option.x && option.y) {
-			translate(hit.element, lastMovingEvent.clientX - clientX, lastMovingEvent.clientY - clientY);
+			translate(taken.element, lastMovingEvent.clientX - clientX, lastMovingEvent.clientY - clientY);
 		} else if (option.x) {
-			translateX(hit.element, lastMovingEvent.clientX - clientX);
+			translateX(taken.element, lastMovingEvent.clientX - clientX);
 		} else if (option.y) {
-			translateY(hit.element, lastMovingEvent.clientY - clientY);
+			translateY(taken.element, lastMovingEvent.clientY - clientY);
 		}
 	}
 }
 
 function touchmove() {
-	// 保证move只会在mouseup重置hit等之前被执行
+	// 保证move只会在mouseup重置taken等之前被执行
 	if (state & moving) {
 		state &= ~moving;
-		const option = hit.option;
+		const option = taken.option;
 		const lastTouch = lastMovingEvent.changedTouches[0];
 		if (option.x && option.y) {
-			translate(hit.element, lastTouch.clientX - clientX, lastTouch.clientY - clientY);
+			translate(taken.element, lastTouch.clientX - clientX, lastTouch.clientY - clientY);
 		} else if (option.x) {
-			translateX(hit.element, lastTouch.clientX - clientX);
+			translateX(taken.element, lastTouch.clientX - clientX);
 		} else if (option.y) {
-			translateY(hit.element, lastTouch.clientY - clientY);
+			translateY(taken.element, lastTouch.clientY - clientY);
 		}
 	}
 }
 
+export function snapshot() {
+    return {
+        state,
+        taken,
+        matrix,
+        clientY,
+        clientX,
+        lastMovingEvent,
+        tree,
+    }
+}
+
 export default function draggify(element, option = {x: true, y: true, idle: void 0, gc: true}) {
-	element.setAttribute('draggify', true);
-	const fiber = new Fiber(element, option);
+	element.setAttribute('draggify', 'true');
+	const token = new Token(element, option);
 	if (tree) {
 		if (option.gc) {
 			gc();
 		}
-		merge(fiber, tree);
+		merge(token, tree);
 	} else {
-		tree = fiber;
+		tree = token;
 	}
 }
